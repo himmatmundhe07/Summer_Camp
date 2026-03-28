@@ -8,9 +8,18 @@ import { supabase } from '../../lib/supabase';
 export default function StepThree({ data, onBack }) {
   const navigate = useNavigate();
 
-  const handlePayment = async (e, method = 'online') => {
-    e.preventDefault();
-    const rect = e.currentTarget.getBoundingClientRect();
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const finalizeBooking = async (method, e) => {
+    const rect = e ? e.currentTarget.getBoundingClientRect() : { left: window.innerWidth/2, top: window.innerHeight/2, width: 0, height: 0 };
     const x = (rect.left + rect.width / 2) / window.innerWidth;
     const y = (rect.top + rect.height / 2) / window.innerHeight;
     
@@ -34,7 +43,7 @@ export default function StepThree({ data, onBack }) {
             address: data.address,
             camp_type: data.campType,
             amount: 500,
-            payment_method: method,
+            payment_method: method === 'online' ? 'Online' : 'Cash',
             status: method === 'online' ? 'Paid' : 'Pending',
             agreed_terms: true
           }
@@ -43,14 +52,12 @@ export default function StepThree({ data, onBack }) {
       if (error) throw error;
 
       confetti({
-        particleCount: 35,
-        spread: 60,
+        particleCount: 40,
+        spread: 70,
         origin: { x, y },
         colors: ['#FF5E7E', '#00D09C', '#FFC000', '#B066FF'],
         disableForReducedMotion: true,
         zIndex: 150,
-        ticks: 150,
-        gravity: 0.8
       });
 
       toast.success(method === 'online' ? "Yay! Payment successful!" : "Booked! Please pay cash at school.", {
@@ -59,9 +66,57 @@ export default function StepThree({ data, onBack }) {
       navigate('/confirmation', { state: { registrationData: { ...data, paymentMethod: method, booking_id: bId } } });
 
     } catch (error) {
-      console.error(error);
-      toast.error("Uh oh! There was a glitch in the magic. Please try again.", { id: "payment" });
+      console.error("DB Insert Error:", error);
+      toast.error("Uh oh! There was a database glitch. Is your Supabase table configured correctly?", { id: "payment", duration: 5000 });
     }
+  };
+
+  const handlePayment = async (e, method = 'online') => {
+    e.preventDefault();
+
+    if (method === 'offline') {
+       await finalizeBooking('offline', e);
+       return;
+    }
+
+    // Load actual Razorpay for Online method!
+    const res = await loadRazorpay();
+    if (!res) {
+      toast.error("Razorpay failed to load. Are you connected to the internet?");
+      return;
+    }
+
+    // Replace this key with the user's actual Razorpay Test/Live Key!
+    const keyToUse = import.meta.env.VITE_RAZORPAY_KEY || "rzp_test_TzY0aBweVbK3zV"; 
+
+    const options = {
+      key: keyToUse, 
+      amount: 500 * 100, // 500 INR in paise
+      currency: "INR",
+      name: "Kalpana PreSchool",
+      description: "Summer Camp 2026 Registration Fee",
+      image: "/Logo.webp",
+      handler: async function (response) {
+        // Once payment succeeds, finalize the DB insertion
+        toast.success(`Payment ID Captured: ${response.razorpay_payment_id}`);
+        await finalizeBooking('online', e);
+      },
+      prefill: {
+        name: data.name || "Adventurer Details",
+        contact: data.mobile || "",
+      },
+      theme: {
+        color: "#FF5E7E"
+      }
+    };
+
+    const paymentObject = new window.Razorpay(options);
+    
+    paymentObject.on('payment.failed', function (response){
+        toast.error(`Payment Failed: ${response.error.description}`);
+    });
+
+    paymentObject.open();
   };
 
   const getCampName = (id) => {
