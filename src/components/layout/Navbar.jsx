@@ -41,7 +41,7 @@ export default function Navbar() {
         {/* Brand */}
         <Link to="/" onClick={() => window.scrollTo(0,0)} className="flex items-center gap-2 group">
           <div className="w-12 h-12 rounded-xl overflow-hidden rotate-3 group-hover:rotate-12 transition-transform flex items-center justify-center border-2 border-[var(--color-text-main)] shadow-solid bg-white">
-            <img src="/src/assets/Logo.webp" alt="Kalpana Logo" className="w-full h-full object-cover" />
+            <img src="/Logo.webp" alt="Kalpana Logo" className="w-full h-full object-cover" />
           </div>
           <span className="font-nunito font-black text-2xl text-[var(--color-text-main)] tracking-tight">
             Kalpana<span className="text-[var(--color-secondary)]">Camp</span>

@@ -10,7 +10,7 @@ export default function DesktopSidebar({ activeTab, setActiveTab }) {
       
       <div className="flex items-center gap-2 mb-12 px-6">
         <div className="w-12 h-12 rounded-xl flex items-center justify-center border-2 border-[var(--color-text-main)] shadow-solid -rotate-3 overflow-hidden bg-white shrink-0">
-           <img src="/src/assets/Logo.webp" alt="Kalpana" className="w-full h-full object-cover" />
+           <img src="/Logo.webp" alt="Kalpana" className="w-full h-full object-cover" />
         </div>
         <div>
           <h1 className="font-nunito font-black text-2xl text-[var(--color-text-main)] leading-none">

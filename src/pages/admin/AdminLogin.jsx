@@ -44,7 +44,7 @@ export default function AdminLogin() {
       <div className="w-full max-w-sm bg-white rounded-3xl border-2 border-[var(--color-text-main)] shadow-[8px_8px_0px_0px_rgba(45,55,72,1)] p-8 relative z-10 flex flex-col items-center">
         
         <div className="w-20 h-20 rounded-2xl flex items-center justify-center border-2 border-[var(--color-text-main)] shadow-solid mb-6 overflow-hidden transform -rotate-6 bg-white shrink-0">
-          <img src="/src/assets/Logo.webp" alt="Kalpana Logo" className="w-full h-full object-cover" />
+          <img src="/Logo.webp" alt="Kalpana Logo" className="w-full h-full object-cover" />
         </div>
 
         <div className="flex items-baseline gap-2 mb-2">
