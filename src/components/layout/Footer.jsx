@@ -26,8 +26,8 @@ export default function Footer() {
 
       <div className="max-w-4xl mx-auto flex flex-col items-center relative z-10">
         
-        <div className="w-16 h-16 bg-[var(--color-purple)] rounded-2xl flex items-center justify-center border-2 border-[var(--color-text-main)] shadow-solid mb-6 transform rotate-6">
-          <Sparkles className="w-8 h-8 text-white" />
+        <div className="w-16 h-16 rounded-2xl flex items-center justify-center border-2 border-[var(--color-text-main)] shadow-solid mb-6 overflow-hidden transform rotate-6 bg-white shrink-0">
+          <img src="/src/assets/Logo.webp" alt="Kalpana Logo" className="w-full h-full object-cover" />
         </div>
 
         <h2 className="font-nunito font-black text-4xl text-[var(--color-text-main)] tracking-tight mb-2">

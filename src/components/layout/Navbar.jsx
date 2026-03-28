@@ -40,8 +40,8 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 w-full h-20 bg-white/90 backdrop-blur-md z-50 border-b-2 border-gray-100 flex items-center justify-between px-6 lg:px-12 shadow-sm">
         {/* Brand */}
         <Link to="/" onClick={() => window.scrollTo(0,0)} className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-[var(--color-primary)] rounded-xl rotate-3 group-hover:rotate-12 transition-transform flex items-center justify-center border-2 border-[var(--color-text-main)] shadow-solid">
-            <Sparkles className="w-6 h-6 text-white" />
+          <div className="w-12 h-12 rounded-xl overflow-hidden rotate-3 group-hover:rotate-12 transition-transform flex items-center justify-center border-2 border-[var(--color-text-main)] shadow-solid bg-white">
+            <img src="/src/assets/Logo.webp" alt="Kalpana Logo" className="w-full h-full object-cover" />
           </div>
           <span className="font-nunito font-black text-2xl text-[var(--color-text-main)] tracking-tight">
             Kalpana<span className="text-[var(--color-secondary)]">Camp</span>

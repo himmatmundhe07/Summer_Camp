@@ -9,8 +9,8 @@ export default function DesktopSidebar({ activeTab, setActiveTab }) {
     <div className="fixed top-0 left-0 w-[240px] h-screen bg-white border-r-2 border-[var(--color-text-main)] hidden lg:flex flex-col py-8 z-40 pb-12 shadow-[4px_0_0_0_rgba(45,55,72,1)]">
       
       <div className="flex items-center gap-2 mb-12 px-6">
-        <div className="w-10 h-10 bg-[var(--color-primary)] rounded-xl flex items-center justify-center border-2 border-[var(--color-text-main)] shadow-solid -rotate-3 text-white font-nunito font-black text-xl">
-           K
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center border-2 border-[var(--color-text-main)] shadow-solid -rotate-3 overflow-hidden bg-white shrink-0">
+           <img src="/src/assets/Logo.webp" alt="Kalpana" className="w-full h-full object-cover" />
         </div>
         <div>
           <h1 className="font-nunito font-black text-2xl text-[var(--color-text-main)] leading-none">
