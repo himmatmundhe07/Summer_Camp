@@ -140,7 +140,7 @@ export default function AdminDashboard() {
                 <div className="bg-white border-2 border-[var(--color-text-main)] shadow-[4px_4px_0px_0px_rgba(45,55,72,1)] rounded-2xl p-6">
                    <h2 className="font-nunito font-black text-xl text-[var(--color-text-main)] mb-4">Quick Actions</h2>
                    <div className="space-y-3">
-                     <button onClick={() => toast.success("Manual Entry Form coming soon!")} className="w-full text-left px-4 py-3 rounded-xl border-2 border-gray-200 font-quicksand font-bold text-sm hover:border-[var(--color-text-main)] hover:bg-[var(--color-bg-yellow)] transition-colors flex justify-between group">
+                     <button onClick={() => navigate('/register')} className="w-full text-left px-4 py-3 rounded-xl border-2 border-gray-200 font-quicksand font-bold text-sm hover:border-[var(--color-text-main)] hover:bg-[var(--color-bg-yellow)] transition-colors flex justify-between group">
                        <span className="text-[var(--color-text-main)] group-hover:text-black">Add Manual Entry</span> 
                        <span className="text-gray-300 group-hover:text-[var(--color-text-main)]">→</span>
                      </button>

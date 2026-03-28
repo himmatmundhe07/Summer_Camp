@@ -51,8 +51,9 @@ export default function Footer() {
           <div className="flex items-start justify-center gap-3 mb-6">
             <MapPin className="w-5 h-5 text-[var(--color-primary)] shrink-0 mt-0.5" />
             <p className="font-quicksand font-bold text-[var(--color-text-main)] text-left leading-relaxed">
-              123 Main Street, Near City Ground<br />
-              Valsad, Gujarat 396001
+              Nanapondha - Dharmpur Road<br />
+              Chival (Toranvera F.) ta: Nanapondha<br />
+              Dist: Valsad, Gujarat.
             </p>
           </div>
           
