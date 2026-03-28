@@ -105,7 +105,12 @@ export default function AdminDashboard() {
             <h1 className="font-nunito font-black text-3xl lg:text-5xl text-[var(--color-text-main)] mb-10 tracking-tight">
               Dashboard Overview
             </h1>
-            <StatsGrid stats={{ total: 50, revenue: 25000, classOnly: 32, extended: 18 }} />
+            <StatsGrid stats={{ 
+               total: registrations.length, 
+               revenue: registrations.filter(r => r.status === 'Paid').reduce((sum, r) => sum + Number(r.amount || 0), 0), 
+               classOnly: registrations.filter(r => r.campType === 'class').length, 
+               extended: registrations.filter(r => r.campType !== 'class').length 
+            }} />
 
             <div className="flex flex-col lg:flex-row gap-6">
               
@@ -115,17 +120,16 @@ export default function AdminDashboard() {
                   <Activity className="w-5 h-5 text-[var(--color-primary)]" />
                 </h2>
                 <div className="space-y-4">
-                  {[
-                    { action: 'New Registration', user: 'Aarav Patel', tag: 'Hostel', time: '10 mins ago', color: 'bg-green-100 text-green-700 ring-green-500' },
-                    { action: 'Payment Failed', user: 'Neha Sharma', tag: 'Class Only', time: '1 hour ago', color: 'bg-red-100 text-red-700 ring-red-500' },
-                    { action: 'New Registration', user: 'Viaan Shah', tag: 'Day Care', time: '2 hours ago', color: 'bg-green-100 text-green-700 ring-green-500' },
-                    { action: 'Updated Info', user: 'John Doe', tag: 'System', time: '3 hours ago', color: 'bg-blue-100 text-blue-700 ring-blue-500' }
-                  ].map((act, i) => (
+                  {registrations.length === 0 ? (
+                    <p className="font-quicksand font-bold text-gray-400">Waiting for the first adventurer...</p>
+                  ) : registrations.slice(0, 5).map((act, i) => (
                     <div key={i} className="flex gap-4 items-start pb-4 border-b-2 border-dashed border-gray-200 last:border-0 last:pb-0">
-                      <div className={`mt-2 w-2 h-2 rounded-full ring-2 ${act.color.split(' ').pop()}`} />
+                      <div className={`mt-2 w-2 h-2 rounded-full ring-2 ${act.status === 'Paid' ? 'ring-green-500 bg-green-500' : act.status === 'Failed' ? 'ring-red-500 bg-red-500' : 'ring-yellow-500 bg-yellow-500'}`} />
                       <div>
-                         <p className="font-nunito font-black text-base text-[var(--color-text-main)]">{act.action}: <span className="font-quicksand font-bold font-normal">{act.user}</span></p>
-                         <p className="font-quicksand font-bold text-xs text-gray-500 mt-0.5">{act.time} • <span className={`px-2 py-0.5 rounded text-[10px] ${act.color.split(' ').slice(0,2).join(' ')} uppercase`}>{act.tag}</span></p>
+                         <p className="font-nunito font-black text-base text-[var(--color-text-main)]">
+                           {act.status === 'Paid' ? 'Successful Payment' : act.status === 'Failed' ? 'Payment Failed' : 'New Registration'}: <span className="font-quicksand font-bold font-normal">{act.name}</span>
+                         </p>
+                         <p className="font-quicksand font-bold text-xs text-gray-500 mt-0.5">{act.date} • <span className={`px-2 py-0.5 rounded text-[10px] uppercase ${act.status === 'Paid' ? 'bg-green-100 text-green-700' : act.status === 'Failed' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>{act.campType === 'daycare' ? 'Day Care' : act.campType === 'hostel' ? 'Hostel' : 'Class'}</span></p>
                       </div>
                     </div>
                   ))}
@@ -140,7 +144,7 @@ export default function AdminDashboard() {
                        <span className="text-[var(--color-text-main)] group-hover:text-black">Add Manual Entry</span> 
                        <span className="text-gray-300 group-hover:text-[var(--color-text-main)]">→</span>
                      </button>
-                     <button onClick={() => toast.success("Payment reminders sent to 4 parents via WhatsApp!")} className="w-full text-left px-4 py-3 rounded-xl border-2 border-gray-200 font-quicksand font-bold text-sm hover:border-[var(--color-text-main)] hover:bg-[var(--color-bg-blue)] transition-colors flex justify-between group">
+                     <button onClick={() => toast.success("Payment reminders sent automatically!")} className="w-full text-left px-4 py-3 rounded-xl border-2 border-gray-200 font-quicksand font-bold text-sm hover:border-[var(--color-text-main)] hover:bg-[var(--color-bg-blue)] transition-colors flex justify-between group">
                        <span className="text-[var(--color-text-main)] group-hover:text-black">Send Payment Reminders</span> 
                        <span className="text-gray-300 group-hover:text-[var(--color-text-main)]">→</span>
                      </button>
@@ -153,10 +157,10 @@ export default function AdminDashboard() {
 
                 <div className="bg-[var(--color-text-main)] text-white border-2 border-[var(--color-text-main)] shadow-[4px_4px_0px_0px_rgba(45,55,72,1)] rounded-2xl p-6 relative overflow-hidden flex flex-col items-center justify-center min-h-[160px]">
                    <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -translate-y-10 translate-x-10" />
-                   <h3 className="font-nunito font-black text-5xl mb-1 tracking-tighter">50</h3>
+                   <h3 className="font-nunito font-black text-5xl mb-1 tracking-tighter">{Math.max(0, 100 - registrations.length)}</h3>
                    <p className="font-quicksand font-bold text-white/70 text-xs uppercase tracking-[0.2em]">Seats Remaining</p>
                    <div className="w-full h-2 bg-white/20 mt-5 rounded-full overflow-hidden">
-                     <div className="h-full bg-[var(--color-secondary)] w-1/2 rounded-full" />
+                     <div className="h-full bg-[var(--color-secondary)] rounded-full" style={{ width: `${Math.min(100, (registrations.length / 100) * 100)}%` }} />
                    </div>
                 </div>
               </div>

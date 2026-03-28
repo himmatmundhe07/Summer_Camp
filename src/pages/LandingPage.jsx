@@ -7,6 +7,7 @@ import InfoBar from '../components/landing/InfoBar';
 import FaqSection from '../components/landing/FaqSection';
 import Footer from '../components/layout/Footer';
 import MobileStickyCTA from '../components/landing/MobileStickyCTA';
+import Countdown from '../components/landing/Countdown';
 
 export default function LandingPage() {
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function LandingPage() {
       <Navbar />
       <Hero />
       <InfoBar />
+      <Countdown />
       <Activities />
       <Pricing />
       <FaqSection />

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
 
 export default function Countdown() {
@@ -29,12 +28,7 @@ export default function Countdown() {
   }, []);
 
   const Unit = ({ value, label, color, rotate }) => (
-    <motion.div 
-      initial={{ scale: 0.9, opacity: 0, y: 20 }}
-      whileInView={{ scale: 1, opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ type: "spring", stiffness: 200, damping: 20 }}
-      whileHover={{ scale: 1.05, y: -5, rotate: 0 }}
+    <div 
       className={`card-fun ${color} border-2 border-[var(--color-text-main)] rounded-2xl flex flex-col items-center justify-center py-6 px-4 ${rotate} cursor-default`}
     >
       <div className={`font-nunito font-black text-4xl lg:text-6xl text-[var(--color-text-main)] leading-tight ${label === 'SECONDS' ? 'animate-pulse-soft' : ''}`}>
@@ -43,7 +37,7 @@ export default function Countdown() {
       <div className="font-quicksand font-bold text-xs lg:text-sm tracking-widest text-[var(--color-text-main)] mt-2">
         {label}
       </div>
-    </motion.div>
+    </div>
   );
 
   return (
@@ -54,19 +48,14 @@ export default function Countdown() {
 
       <div className="max-w-4xl mx-auto relative z-10 flex flex-col items-center text-center">
         
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          className="flex items-center justify-center gap-3 mb-10"
-        >
+        <div className="flex items-center justify-center gap-3 mb-10">
            <div className="w-12 h-12 bg-[var(--color-primary)] rounded-full flex items-center justify-center border-2 border-[var(--color-text-main)] shadow-solid">
              <Clock className="w-6 h-6 text-white" />
            </div>
            <h2 className="font-nunito font-black text-3xl lg:text-5xl text-[var(--color-text-main)]">
              The adventure starts in...
            </h2>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 w-full">
           <Unit value={timeLeft.days} label="DAYS" color="bg-[#FF9EC0]" rotate="-rotate-2" />
