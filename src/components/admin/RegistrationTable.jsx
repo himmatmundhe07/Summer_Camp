@@ -15,7 +15,7 @@ export default function RegistrationTable({ data, onRowClick }) {
   const getCampBadge = (type) => {
     switch (type) {
       case 'class': 
-        return <span className="bg-[#FFE285] px-2 py-0.5 rounded text-[10px] font-nunito font-black text-yellow-900 shadow-solid !shadow-[1px_1px_0px_0px_rgba(45,55,72,1)] border border-[var(--color-text-main)]">Class Only</span>;
+        return <span className="bg-[#FFE285] px-2 py-0.5 rounded text-[10px] font-nunito font-black text-yellow-900 shadow-solid !shadow-[1px_1px_0px_0px_rgba(45,55,72,1)] border border-[var(--color-text-main)]">Daily 3 Hours</span>;
       case 'daycare': 
         return <span className="bg-[#FF9EC0] px-2 py-0.5 rounded text-[10px] font-nunito font-black text-pink-900 shadow-solid !shadow-[1px_1px_0px_0px_rgba(45,55,72,1)] border border-[var(--color-text-main)]">Day Care</span>;
       case 'hostel': 

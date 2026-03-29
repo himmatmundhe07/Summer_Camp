@@ -42,7 +42,7 @@ export default function StepThree({ data, onBack }) {
             parent_mobile: data.mobile,
             address: data.address,
             camp_type: data.campType,
-            amount: 500,
+            amount: getCampPrice(data.campType),
             payment_method: method === 'online' ? 'Online' : 'Cash',
             status: method === 'online' ? 'Paid' : 'Pending',
             agreed_terms: true
@@ -91,7 +91,7 @@ export default function StepThree({ data, onBack }) {
 
     const options = {
       key: keyToUse, 
-      amount: 500 * 100, // 500 INR in paise
+      amount: getCampPrice(data.campType) * 100, // Amount in paise
       currency: "INR",
       name: "Kalpana PreSchool",
       description: "Summer Camp 2026 Registration Fee",
@@ -121,11 +121,20 @@ export default function StepThree({ data, onBack }) {
 
   const getCampName = (id) => {
     const map = {
-      class: "Class Only",
+      class: "Daily 3 Hours",
       daycare: "Day Care",
       hostel: "Hostel"
     };
     return map[id] || id;
+  };
+
+  const getCampPrice = (id) => {
+    const map = {
+      class: 500,
+      daycare: 2500,
+      hostel: 7000
+    };
+    return map[id] || 500;
   };
 
   const SummaryRow = ({ label, value }) => (
@@ -161,7 +170,7 @@ export default function StepThree({ data, onBack }) {
         <SummaryRow label="Class" value={data.class || "N/A"} />
         <SummaryRow label="Contact" value={data.mobile ? `+91 ${data.mobile}` : "N/A"} />
         <SummaryRow label="Adventure" value={getCampName(data.campType)} />
-        <SummaryRow label="Booking Fee" value="₹500" />
+        <SummaryRow label="Total Fee" value={`₹${getCampPrice(data.campType)}`} />
       </div>
 
       <div className="mt-auto">
@@ -171,7 +180,7 @@ export default function StepThree({ data, onBack }) {
         </div>
 
         <PrimaryButton onClick={(e) => handlePayment(e, 'online')} className="bg-[var(--color-secondary)] border-[var(--color-text-main)] shadow-solid mb-4">
-          Pay ₹500 Securely
+          Pay ₹{getCampPrice(data.campType)} Securely
         </PrimaryButton>
         <button 
           onClick={(e) => handlePayment(e, 'offline')}

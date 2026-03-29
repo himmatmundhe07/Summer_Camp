@@ -9,7 +9,7 @@ export default function StepTwo({ data, updateData, onNext, onBack }) {
   const camps = [
     {
       id: "class",
-      name: "Class Only",
+      name: "Daily 3 Hours",
       desc: "Morning only · 8 AM to 11 AM",
       price: "₹500",
       color: "bg-[#8CB8FF]/20 hover:bg-[#8CB8FF]/40 border-[var(--color-text-main)]",
@@ -19,7 +19,7 @@ export default function StepTwo({ data, updateData, onNext, onBack }) {
       id: "daycare",
       name: "Day Care",
       desc: "Full day care · Meals included",
-      price: "₹500 + charges",
+      price: "₹2500",
       color: "bg-[#FFE285]/30 hover:bg-[#FFE285]/60 border-[var(--color-text-main)]",
       popular: true,
       Icon: Sun
@@ -28,7 +28,7 @@ export default function StepTwo({ data, updateData, onNext, onBack }) {
       id: "hostel",
       name: "Hostel",
       desc: "Residential stay facility",
-      price: "₹500 + charges",
+      price: "₹7000",
       color: "bg-[#B066FF]/20 hover:bg-[#B066FF]/40 border-[var(--color-text-main)]",
       Icon: Tent
     }
@@ -155,8 +155,8 @@ export default function StepTwo({ data, updateData, onNext, onBack }) {
 
       <div className="mt-8 pt-6 border-t-2 border-dashed border-gray-200">
         <div className="mb-5 flex justify-between items-center bg-[#F8FAFC] border-2 border-[var(--color-text-main)] p-3 rounded-xl">
-          <span className="font-nunito font-black text-[var(--color-text-muted)] text-sm uppercase">Total Booking Fee</span>
-          <span className="font-nunito font-black text-2xl text-[var(--color-text-main)]">₹500</span>
+          <span className="font-nunito font-black text-[var(--color-text-muted)] text-sm uppercase">Total Fee</span>
+          <span className="font-nunito font-black text-2xl text-[var(--color-text-main)]">{data.campType ? camps.find(c => c.id === data.campType)?.price : '₹0'}</span>
         </div>
 
         <PrimaryButton 

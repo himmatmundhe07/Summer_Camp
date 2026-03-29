@@ -77,7 +77,7 @@ export default function DetailPanel({ isOpen, data, onClose, onUpdateStatus }) {
                 Camp Details
                 <Ticket className="w-5 h-5 text-[var(--color-text-main)]" />
               </div>
-              <SummaryRow label="Type" value={data.campType === 'class' ? 'Class Only' : data.campType === 'daycare' ? 'Day Care' : 'Hostel'} />
+              <SummaryRow label="Type" value={data.campType === 'class' ? 'Daily 3 Hours' : data.campType === 'daycare' ? 'Day Care' : 'Hostel'} />
               <SummaryRow label="Paid" value={`₹${data.amount}`} />
               <SummaryRow label="Status" value={
                 <span className={`px-2 py-1 rounded text-[10px] font-nunito font-black uppercase tracking-widest text-white border-2 border-[var(--color-text-main)] shadow-solid ${data.status === 'Paid' ? 'bg-[#00D09C]' : data.status === 'Failed' ? 'bg-[#FF5E7E]' : 'bg-[#FFC000]'}`}>

@@ -98,7 +98,7 @@ export default function ConfirmationView() {
                 <div className="flex-1">
                   <p className="text-xs font-nunito font-black uppercase tracking-widest text-[#B066FF] mb-1">Package</p>
                   <p className="text-xl font-quicksand font-bold text-[var(--color-text-main)]">
-                    {data.campType === 'daycare' ? 'Day Care' : data.campType === 'hostel' ? 'Hostel' : 'Class Only'}
+                    {data.campType === 'daycare' ? 'Day Care' : data.campType === 'hostel' ? 'Hostel' : 'Daily 3 Hours'}
                   </p>
                 </div>
               </div>

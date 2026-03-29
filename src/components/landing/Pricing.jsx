@@ -63,7 +63,7 @@ export default function Pricing() {
             transition={{ delay: 0.1 }}
             className="card-fun bg-white rounded-3xl border-2 border-[var(--color-text-main)] p-8 flex flex-col"
           >
-            <h3 className="font-nunito font-black text-2xl text-[var(--color-text-main)] mb-2">Class Only</h3>
+            <h3 className="font-nunito font-black text-2xl text-[var(--color-text-main)] mb-2">Daily 3 Hours</h3>
             <p className="font-quicksand font-bold text-[var(--color-text-muted)] mb-6">Perfect for morning energy bursts!</p>
             
             <div className="mb-8">
@@ -103,8 +103,7 @@ export default function Pricing() {
             <p className="font-quicksand font-bold text-[var(--color-text-main)]/70 mb-6">For busy parents who want peace of mind.</p>
             
             <div className="mb-8 flex items-baseline gap-2">
-              <span className="font-nunito font-black text-5xl text-[var(--color-text-main)]">₹500</span>
-              <span className="font-nunito font-black text-xl text-[var(--color-text-main)]">+ charges</span>
+              <span className="font-nunito font-black text-5xl text-[var(--color-text-main)]">₹2500</span>
             </div>
 
             <ul className="space-y-4 font-quicksand font-bold text-lg text-[var(--color-text-main)] mb-10 flex-grow">
@@ -135,8 +134,7 @@ export default function Pricing() {
             <p className="font-quicksand font-bold text-[var(--color-text-muted)] mb-6">The ultimate summer vacation away!</p>
             
             <div className="mb-8 flex items-baseline gap-2">
-              <span className="font-nunito font-black text-5xl text-[var(--color-text-main)]">₹500</span>
-              <span className="font-nunito font-black text-xl text-[var(--color-text-muted)]">+ charges</span>
+              <span className="font-nunito font-black text-5xl text-[var(--color-text-main)]">₹7000</span>
             </div>
 
             <ul className="space-y-4 font-quicksand font-bold text-lg text-[var(--color-text-main)] mb-10 flex-grow">

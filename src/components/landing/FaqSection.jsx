@@ -8,7 +8,7 @@ export default function FaqSection() {
   const faqs = [
     {
       question: "What are the camp timings?",
-      answer: "The 'Class Only' session runs from 8:00 AM to 11:00 AM. For parents who need extended care, our 'Day Care' option runs until 5:00 PM!"
+      answer: "The 'Daily 3 Hours' session runs from 8:00 AM to 11:00 AM. For parents who need extended care, our 'Day Care' option runs until 5:00 PM!"
     },
     {
       question: "Are meals provided?",

@@ -49,7 +49,7 @@ export default function StatsGrid({ stats }) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 w-full">
       <StatCard label="Total Kids" targetValue={stats.total} icon={Users} colorClass="bg-[#FF9EC0]" />
       <StatCard label="Revenue" targetValue={stats.revenue} icon={IndianRupee} colorClass="bg-[#85E1C8]" />
-      <StatCard label="Class Only" targetValue={stats.classOnly} icon={BookOpen} colorClass="bg-[#FFE285]" />
+      <StatCard label="Daily 3 Hours" targetValue={stats.classOnly} icon={BookOpen} colorClass="bg-[#FFE285]" />
       <StatCard label="Day Care" targetValue={stats.extended} icon={Tent} colorClass="bg-[#8CB8FF]" />
     </div>
   );

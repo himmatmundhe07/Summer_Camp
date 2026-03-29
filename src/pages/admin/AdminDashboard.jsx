@@ -203,7 +203,7 @@ export default function AdminDashboard() {
                   <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-3 h-3 z-10" />
                   <select value={campFilter} onChange={e=>setCampFilter(e.target.value)} className="absolute inset-0 w-full h-full bg-gray-50 border border-gray-200 rounded-lg pl-8 pr-2 font-quicksand font-bold text-xs focus:outline-none focus:border-[var(--color-accent)] appearance-none cursor-pointer">
                     <option value="">All Camps</option>
-                    <option value="class">Class Only</option>
+                    <option value="class">Daily 3 Hours</option>
                     <option value="daycare">Day Care</option>
                     <option value="hostel">Hostel</option>
                   </select>
