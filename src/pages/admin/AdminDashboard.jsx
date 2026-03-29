@@ -5,6 +5,7 @@ import StatsGrid from '../../components/admin/StatsGrid';
 import RegistrationList from '../../components/admin/RegistrationList';
 import RegistrationTable from '../../components/admin/RegistrationTable';
 import DetailPanel from '../../components/admin/DetailPanel';
+import AttendanceTracker from '../../components/admin/AttendanceTracker';
 import { useNavigate } from 'react-router-dom';
 import { Download, Search, Filter, Activity } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -21,32 +22,79 @@ export default function AdminDashboard() {
   const [campFilter, setCampFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [genderFilter, setGenderFilter] = useState('');
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
   const navigate = useNavigate();
 
   React.useEffect(() => {
+    let subscription = null;
+
     const fetchRegistrations = async () => {
-      const { data, error } = await supabase.from('registrations').select('*').order('created_at', { ascending: false });
-      if (error) {
-        toast.error("Error fetching data!");
-      } else if (data) {
-        const mappedData = data.map(row => ({
-          id: row.id,
-          name: row.student_name,
-          gender: row.gender,
-          age: row.age,
-          class: row.class_name,
-          mobile: row.parent_mobile,
-          campType: row.camp_type,
-          amount: row.amount,
-          status: row.status,
-          date: new Date(row.created_at).toLocaleDateString(),
-          address: row.address,
-        }));
-        setRegistrations(mappedData);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/admin/login');
+        return;
+      }
+
+      const fetchAll = async () => {
+        const { data, error } = await supabase.from('registrations').select('*').order('created_at', { ascending: false });
+        if (error) {
+          toast.error("Error fetching data!");
+        } else if (data) {
+          const mappedData = data.map(row => ({
+            id: row.id,
+            name: row.student_name,
+            gender: row.gender,
+            age: row.age,
+            class: row.class_name,
+            mobile: row.parent_mobile,
+            campType: row.camp_type,
+            amount: row.amount,
+            status: row.status,
+            date: new Date(row.created_at).toLocaleDateString(),
+            address: row.address,
+            adminNotes: row.admin_notes || '',
+            emergencyContact: row.emergency_contact || '',
+            attendance: row.attendance_data || {},
+          }));
+          
+          const dataWithSiblings = mappedData.map(reg => {
+            const siblingsList = mappedData.filter(r => r.mobile === reg.mobile && r.id !== reg.id);
+            return {
+               ...reg,
+               siblings: siblingsList.map(s => s.name)
+            };
+          });
+
+          setRegistrations(dataWithSiblings);
+        }
+      };
+
+      await fetchAll();
+
+      // Fix: Realtime subscription for race conditions
+      subscription = supabase
+        .channel('schema-db-changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'registrations' }, () => {
+          fetchAll(); 
+        })
+        .subscribe();
+
+      // Fetch Audit Logs
+      const { data: logsData } = await supabase.from('audit_logs').select('*').order('created_at', { ascending: false }).limit(50);
+      if (logsData) {
+        setAuditLogs(logsData);
       }
     };
+    
     fetchRegistrations();
-  }, []);
+
+    return () => {
+      if (subscription) {
+        supabase.removeChannel(subscription);
+      }
+    };
+  }, [navigate]);
 
   const handleTabChange = async (tab) => {
     if (tab === 'logout') {
@@ -58,6 +106,57 @@ export default function AdminDashboard() {
     }
   };
 
+  const logAction = async (actionType, camperName, details) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const adminEmail = session?.user?.email || 'Unknown Admin';
+      const newLog = {
+        admin_email: adminEmail,
+        action: actionType,
+        camper_name: camperName,
+        details: details,
+      };
+      
+      const { error } = await supabase.from('audit_logs').insert([newLog]);
+      if (!error) {
+         setAuditLogs(prev => [{ ...newLog, created_at: new Date().toISOString() }, ...prev]);
+      }
+    } catch (err) {
+      console.error("Failed to log action", err);
+    }
+  };
+
+  const updateAdminNotes = async (id, notes) => {
+    const { error } = await supabase.from('registrations').update({ admin_notes: notes }).eq('id', id);
+    if (error) { toast.error("Failed to save note. Check if your database column exists."); return; }
+    setRegistrations(prev => prev.map(reg => reg.id === id ? { ...reg, adminNotes: notes } : reg));
+    const targetReg = registrations.find(r => r.id === id);
+    setSelectedReg(prev => prev && prev.id === id ? { ...prev, adminNotes: notes } : prev);
+    logAction('UPDATE_NOTE', targetReg?.name || 'Unknown', 'Updated internal admin notes');
+    toast.success("Admin note saved!");
+  };
+
+  const updateCamperDetails = async (id, updatedData) => {
+    const dbUpdate = {
+      student_name: updatedData.name,
+      gender: updatedData.gender,
+      age: updatedData.age,
+      class_name: updatedData.class,
+      parent_mobile: updatedData.mobile,
+      emergency_contact: updatedData.emergencyContact,
+      camp_type: updatedData.campType,
+      address: updatedData.address
+    };
+    const { error } = await supabase.from('registrations').update(dbUpdate).eq('id', id);
+    if (error) { toast.error("Database blocked the update!"); return; }
+    
+    setRegistrations(prev => prev.map(reg => reg.id === id ? { ...reg, ...updatedData } : reg));
+    const targetReg = registrations.find(r => r.id === id);
+    setSelectedReg(prev => prev && prev.id === id ? { ...prev, ...updatedData } : prev);
+    logAction('UPDATE_DETAILS', updatedData.name, 'Edited core camper profile details');
+    toast.success("Camper details updated!");
+  };
+
   const updateStatus = async (id, newStatus) => {
     const { error } = await supabase.from('registrations').update({ status: newStatus }).eq('id', id);
     if (error) {
@@ -65,8 +164,34 @@ export default function AdminDashboard() {
       return;
     }
     setRegistrations(prev => prev.map(reg => reg.id === id ? { ...reg, status: newStatus } : reg));
+    const targetReg = registrations.find(r => r.id === id);
     setSelectedReg(prev => prev && prev.id === id ? { ...prev, status: newStatus } : prev);
+    logAction('STATUS_CHANGE', targetReg?.name || 'Unknown', `Marked payment status as ${newStatus}`);
     toast.success(`Status updated to ${newStatus}`);
+  };
+
+  const deleteRegistration = async (id) => {
+    setPendingDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    const id = pendingDeleteId;
+    setPendingDeleteId(null);
+    
+    const { error } = await supabase.from('registrations').delete().eq('id', id);
+    
+    if (error) {
+      toast.error("Database blocked the deletion. Did you add the Delete policy?");
+      console.error(error);
+      return;
+    }
+    
+    const targetReg = registrations.find(r => r.id === id);
+    logAction('DELETE_RECORD', targetReg?.name || 'Unknown', 'Completely erased camper from system');
+
+    setRegistrations(prev => prev.filter(reg => reg.id !== id));
+    setSelectedReg(null);
+    toast.success("Camper fully erased from system!");
   };
 
   const filteredData = registrations.filter(item => {
@@ -85,8 +210,13 @@ export default function AdminDashboard() {
   };
 
   const exportCSV = () => {
-    const headers = ['ID', 'Name', 'Gender', 'Age', 'Class', 'Mobile', 'Camp', 'Amount', 'Status', 'Date', 'Address'];
-    const rows = filteredData.map(d => [d.id, d.name, d.gender, d.age, d.class, d.mobile, d.campType, d.amount, d.status, d.date, `"${d.address}"`]);
+    const esc = (val) => {
+      const s = String(val ?? '');
+      if (s.includes(',') || s.includes('"') || s.includes('\n')) return `"${s.replace(/"/g, '""')}"`;
+      return s;
+    };
+    const headers = ['ID', 'Name', 'Gender', 'Age', 'Class', 'Mobile', 'Camp', 'Amount', 'Status', 'Date', 'Address', 'Siblings'];
+    const rows = filteredData.map(d => [d.id, d.name, d.gender, d.age, d.class, d.mobile, d.campType, d.amount, d.status, d.date, d.address, (d.siblings || []).join(' / ')].map(esc));
     const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const link = document.createElement("a");
     link.href = encodeURI(csvContent);
@@ -116,20 +246,20 @@ export default function AdminDashboard() {
               
               <div className="flex-1 bg-white border-2 border-[var(--color-text-main)] rounded-2xl p-6 shadow-solid">
                 <h2 className="font-nunito font-black text-2xl text-[var(--color-text-main)] mb-6 flex justify-between items-center">
-                  Recent Activities
+                  Live Activity Audit
                   <Activity className="w-5 h-5 text-[var(--color-primary)]" />
                 </h2>
-                <div className="space-y-4">
-                  {registrations.length === 0 ? (
-                    <p className="font-quicksand font-bold text-gray-400">Waiting for the first adventurer...</p>
-                  ) : registrations.slice(0, 5).map((act, i) => (
+                <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
+                  {auditLogs.length === 0 ? (
+                    <p className="font-quicksand font-bold text-gray-400">No admin actions tracked yet...</p>
+                  ) : auditLogs.map((log, i) => (
                     <div key={i} className="flex gap-4 items-start pb-4 border-b-2 border-dashed border-gray-200 last:border-0 last:pb-0">
-                      <div className={`mt-2 w-2 h-2 rounded-full ring-2 ${act.status === 'Paid' ? 'ring-green-500 bg-green-500' : act.status === 'Failed' ? 'ring-red-500 bg-red-500' : 'ring-yellow-500 bg-yellow-500'}`} />
+                      <div className="mt-2 w-2 h-2 rounded-full ring-2 ring-[var(--color-text-main)] bg-[var(--color-primary)] shrink-0" />
                       <div>
-                         <p className="font-nunito font-black text-base text-[var(--color-text-main)]">
-                           {act.status === 'Paid' ? 'Successful Payment' : act.status === 'Failed' ? 'Payment Failed' : 'New Registration'}: <span className="font-quicksand font-bold font-normal">{act.name}</span>
+                         <p className="font-nunito font-black text-sm text-[var(--color-text-main)] leading-snug">
+                           <span className="text-[var(--color-primary)]">{log.admin_email.split('@')[0]}</span> did <span className="underline decoration-2 decoration-gray-300">{log.action.replace(/_/g, ' ')}</span> on <span className="font-normal">{log.camper_name}</span>
                          </p>
-                         <p className="font-quicksand font-bold text-xs text-gray-500 mt-0.5">{act.date} • <span className={`px-2 py-0.5 rounded text-[10px] uppercase ${act.status === 'Paid' ? 'bg-green-100 text-green-700' : act.status === 'Failed' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>{act.campType === 'daycare' ? 'Day Care' : act.campType === 'hostel' ? 'Hostel' : 'Class'}</span></p>
+                         <p className="font-quicksand font-bold text-xs text-gray-500 mt-1">"{log.details}" • {new Date(log.created_at).toLocaleString([], { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' })}</p>
                       </div>
                     </div>
                   ))}
@@ -142,14 +272,6 @@ export default function AdminDashboard() {
                    <div className="space-y-3">
                      <button onClick={() => navigate('/register')} className="w-full text-left px-4 py-3 rounded-xl border-2 border-gray-200 font-quicksand font-bold text-sm hover:border-[var(--color-text-main)] hover:bg-[var(--color-bg-yellow)] transition-colors flex justify-between group">
                        <span className="text-[var(--color-text-main)] group-hover:text-black">Add Manual Entry</span> 
-                       <span className="text-gray-300 group-hover:text-[var(--color-text-main)]">→</span>
-                     </button>
-                     <button onClick={() => toast.success("Payment reminders sent automatically!")} className="w-full text-left px-4 py-3 rounded-xl border-2 border-gray-200 font-quicksand font-bold text-sm hover:border-[var(--color-text-main)] hover:bg-[var(--color-bg-blue)] transition-colors flex justify-between group">
-                       <span className="text-[var(--color-text-main)] group-hover:text-black">Send Payment Reminders</span> 
-                       <span className="text-gray-300 group-hover:text-[var(--color-text-main)]">→</span>
-                     </button>
-                     <button onClick={() => { setActiveTab('registrations'); setTimeout(() => window.print(), 300); }} className="w-full text-left px-4 py-3 rounded-xl border-2 border-gray-200 font-quicksand font-bold text-sm hover:border-[var(--color-text-main)] hover:bg-[#FF9EC0] transition-colors flex justify-between group">
-                       <span className="text-[var(--color-text-main)] group-hover:text-black">Print Today's Report</span> 
                        <span className="text-gray-300 group-hover:text-[var(--color-text-main)]">→</span>
                      </button>
                    </div>
@@ -175,9 +297,6 @@ export default function AdminDashboard() {
                 Registrations
               </h1>
               <div className="flex gap-2">
-                 <button onClick={() => window.print()} className="h-10 px-4 bg-white border-2 border-[var(--color-text-main)] rounded-xl font-nunito font-bold text-sm flex items-center gap-2 hover:bg-gray-50 shadow-sm active:translate-y-0.5">
-                   Print List
-                 </button>
                  <button onClick={exportCSV} className="h-10 px-4 bg-[var(--color-text-main)] text-white border-2 border-[var(--color-text-main)] rounded-xl font-nunito font-bold text-sm flex items-center gap-2 hover:bg-gray-800 shadow-[2px_2px_0px_0px_rgba(45,55,72,0.3)] active:translate-y-0.5 transition-all">
                    <Download className="w-4 h-4" /> Export CSV
                  </button>
@@ -244,20 +363,59 @@ export default function AdminDashboard() {
               data={selectedReg} 
               onClose={() => setSelectedReg(null)} 
               onUpdateStatus={updateStatus}
+              onDelete={deleteRegistration}
+              onUpdateNotes={updateAdminNotes}
+              onUpdateCamper={updateCamperDetails}
             />
           </div>
+        )}
+
+        {activeTab === 'attendance' && (
+           <AttendanceTracker registrations={registrations} setRegistrations={setRegistrations} logAction={logAction} />
         )}
 
       </main>
 
       <MobileTabBar activeTab={activeTab} setActiveTab={handleTabChange} />
 
-      {/* Dim overlay for detail panel on mobile */}
       {selectedReg && (
          <div 
            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
            onClick={() => setSelectedReg(null)}
          />
+      )}
+
+      {/* Custom Delete Confirmation Modal */}
+      {pendingDeleteId && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-6" onClick={() => setPendingDeleteId(null)}>
+          <div 
+            className="bg-white rounded-3xl border-2 border-[var(--color-text-main)] shadow-[8px_8px_0px_0px_rgba(45,55,72,1)] p-8 max-w-sm w-full text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-red-300">
+              <span className="text-3xl">🗑️</span>
+            </div>
+            <h3 className="font-nunito font-black text-xl text-[var(--color-text-main)] mb-2">Erase this camper?</h3>
+            <p className="font-quicksand font-bold text-sm text-gray-500 mb-2">
+              <span className="text-[var(--color-primary)] font-black">{registrations.find(r => r.id === pendingDeleteId)?.name}</span> will be permanently deleted.
+            </p>
+            <p className="font-quicksand font-bold text-xs text-red-400 mb-6">This action cannot be undone.</p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setPendingDeleteId(null)}
+                className="flex-1 h-12 rounded-xl font-nunito font-black border-2 border-gray-300 text-gray-500 hover:bg-gray-100 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={confirmDelete}
+                className="flex-1 h-12 rounded-xl font-nunito font-black border-2 border-[var(--color-text-main)] bg-[#FF5E7E] text-white hover:bg-red-600 transition-colors shadow-[4px_4px_0px_0px_rgba(45,55,72,1)] active:translate-y-1 active:shadow-none"
+              >
+                Yes, Erase
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -38,10 +38,10 @@ export default function Activities() {
   return (
     <section id="activities" className="bg-[var(--color-bg-light)] py-24 px-6 lg:px-12 relative overflow-hidden">
       
-      <div className="absolute top-40 left-[5%] opacity-50 hidden lg:block animate-bounce-slow">
+      <div className="absolute top-20 lg:top-40 left-[2%] lg:left-[5%] opacity-30 lg:opacity-50 animate-bounce-slow scale-50 lg:scale-100">
         <Star className="w-16 h-16 text-[var(--color-accent)] fill-[var(--color-accent)]" />
       </div>
-      <div className="absolute bottom-[2%] right-[2%] opacity-50 hidden lg:block animate-float" style={{ animationDelay: '1s' }}>
+      <div className="absolute bottom-[2%] right-[2%] opacity-30 lg:opacity-50 animate-float scale-50 lg:scale-100" style={{ animationDelay: '1s' }}>
         <Sparkles className="w-20 h-20 text-[var(--color-secondary)]" />
       </div>
 
@@ -62,6 +62,7 @@ export default function Activities() {
               key={i} 
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
+              whileTap={{ scale: 0.95 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               className={`snap-center shrink-0 w-[85%] lg:w-full card-fun ${act.color} p-8 rounded-3xl border-2 border-[var(--color-text-main)] flex flex-col items-center text-center first:ml-0 last:mr-6 lg:last:mr-0`}
@@ -82,6 +83,7 @@ export default function Activities() {
           <motion.div 
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
+              whileTap={{ scale: 0.95 }}
               viewport={{ once: true }}
               className={`snap-center shrink-0 w-[85%] lg:w-full card-fun bg-white p-8 rounded-3xl border-2 border-dashed border-[var(--color-text-muted)] flex flex-col items-center justify-center text-center cursor-pointer mr-6 lg:mr-0`}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth'})}

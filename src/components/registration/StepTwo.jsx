@@ -18,7 +18,7 @@ export default function StepTwo({ data, updateData, onNext, onBack }) {
     {
       id: "daycare",
       name: "Day Care",
-      desc: "Full day care · Meals included",
+      desc: "Full day care",
       price: "₹2500",
       color: "bg-[#FFE285]/30 hover:bg-[#FFE285]/60 border-[var(--color-text-main)]",
       popular: true,

@@ -12,24 +12,24 @@ export default function Hero() {
       <div className="absolute -bottom-10 left-1/3 w-80 h-80 bg-[var(--color-secondary)] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-bounce-slow" />
 
       {/* Floating High-Quality SVG Icons */}
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2 }} className="absolute top-[20%] left-[10%] animate-float lg:block hidden">
-        <div className="bg-white p-4 rounded-2xl border-2 border-[var(--color-text-main)] shadow-solid transform -rotate-6">
-          <Palette className="w-10 h-10 text-[var(--color-primary)]" />
+      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2 }} className="absolute top-[12%] left-[2%] lg:top-[20%] lg:left-[10%] animate-float scale-75 lg:scale-100 opacity-60 lg:opacity-100 z-0">
+        <div className="bg-white p-3 lg:p-4 rounded-2xl border-2 border-[var(--color-text-main)] shadow-solid transform -rotate-6">
+          <Palette className="w-8 h-8 lg:w-10 lg:h-10 text-[var(--color-primary)]" />
         </div>
       </motion.div>
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.4 }} className="absolute top-[25%] right-[15%] animate-float-reverse lg:block hidden">
-        <div className="bg-white p-4 rounded-2xl border-2 border-[var(--color-text-main)] shadow-solid transform rotate-12">
-          <Rocket className="w-10 h-10 text-[var(--color-accent)]" />
+      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.4 }} className="absolute top-[18%] right-[2%] lg:top-[25%] lg:right-[15%] animate-float-reverse scale-75 lg:scale-100 opacity-60 lg:opacity-100 z-0">
+        <div className="bg-white p-3 lg:p-4 rounded-2xl border-2 border-[var(--color-text-main)] shadow-solid transform rotate-12">
+          <Rocket className="w-8 h-8 lg:w-10 lg:h-10 text-[var(--color-accent)]" />
         </div>
       </motion.div>
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.6 }} className="absolute bottom-[20%] right-[20%] animate-float lg:block hidden">
-        <div className="bg-white p-4 rounded-2xl border-2 border-[var(--color-text-main)] shadow-solid transform -rotate-12">
-          <Puzzle className="w-12 h-12 text-[var(--color-secondary)]" />
+      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.6 }} className="absolute bottom-[28%] right-[2%] lg:bottom-[20%] lg:right-[20%] animate-float scale-75 lg:scale-100 opacity-60 lg:opacity-100 z-0">
+        <div className="bg-white p-3 lg:p-4 rounded-2xl border-2 border-[var(--color-text-main)] shadow-solid transform -rotate-12">
+          <Puzzle className="w-10 h-10 lg:w-12 lg:h-12 text-[var(--color-secondary)]" />
         </div>
       </motion.div>
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.8 }} className="absolute bottom-[15%] left-[20%] animate-float-reverse lg:block hidden">
-        <div className="bg-white p-4 rounded-2xl border-2 border-[var(--color-text-main)] shadow-solid transform rotate-6">
-          <Trophy className="w-10 h-10 text-[var(--color-blue)]" />
+      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.8 }} className="absolute bottom-[22%] left-[2%] lg:bottom-[15%] lg:left-[20%] animate-float-reverse scale-75 lg:scale-100 opacity-60 lg:opacity-100 z-0">
+        <div className="bg-white p-3 lg:p-4 rounded-2xl border-2 border-[var(--color-text-main)] shadow-solid transform rotate-6">
+          <Trophy className="w-8 h-8 lg:w-10 lg:h-10 text-[var(--color-blue)]" />
         </div>
       </motion.div>
 
@@ -73,21 +73,25 @@ export default function Hero() {
           initial={{ y: 20, opacity: 0 }} 
           animate={{ y: 0, opacity: 1 }} 
           transition={{ delay: 0.3 }}
-          className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-6 sm:px-0"
+          className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-6 sm:px-0 relative z-20"
         >
-          <Link 
-            to="/register" 
-            className="btn-fun bg-[var(--color-secondary)] text-white px-6 lg:px-8 py-3 lg:py-4 rounded-xl lg:rounded-2xl font-nunito font-black text-lg lg:text-xl flex items-center justify-center gap-3 w-full sm:w-auto"
-          >
-            Book Their Spot
-            <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6" />
-          </Link>
-          <a 
-            href="#activities"
-            className="btn-fun bg-white text-[var(--color-text-main)] px-6 lg:px-8 py-3 lg:py-4 rounded-xl lg:rounded-2xl font-nunito font-black text-lg lg:text-xl flex items-center justify-center w-full sm:w-auto"
-          >
-            See Activities
-          </a>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+            <Link 
+              to="/register" 
+              className="btn-fun bg-[var(--color-secondary)] text-white px-6 lg:px-8 py-3 lg:py-4 rounded-xl lg:rounded-2xl font-nunito font-black text-lg lg:text-xl flex items-center justify-center gap-3 w-full sm:w-auto"
+            >
+              Book Their Spot
+              <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6" />
+            </Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+            <a 
+              href="#activities"
+              className="btn-fun bg-white text-[var(--color-text-main)] px-6 lg:px-8 py-3 lg:py-4 rounded-xl lg:rounded-2xl font-nunito font-black text-lg lg:text-xl flex items-center justify-center w-full sm:w-auto"
+            >
+              See Activities
+            </a>
+          </motion.div>
         </motion.div>
 
         <motion.div 

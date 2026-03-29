@@ -1,16 +1,46 @@
-# React + Vite
+# Kalpana PreSchool — Summer Camp 2026
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A premium, mobile-first registration portal for the Kalpana PreSchool Summer Camp. Built with React, Tailwind CSS, Framer Motion, and Supabase.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Frontend:** React 19, Vite, Tailwind CSS v4, Framer Motion
+- **Backend:** Supabase (PostgreSQL, Auth, Row Level Security)
+- **Deployment:** Vercel
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🎨 Neo-brutalist, child-friendly UI with micro-animations
+- 📝 Multi-step registration form with sibling support
+- 🎟️ QR Code ticket generation on confirmation
+- 🔐 Protected admin dashboard with session persistence
+- 📊 Attendance tracker with bulk actions and date filtering
+- 📋 Audit logging for admin accountability
+- 📱 Fully responsive (mobile + desktop)
 
-## Expanding the ESLint configuration
+## Local Setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Clone the repository
+2. Copy `.env.example` to `.env` and fill in your Supabase credentials
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+
+## Build for Production
+
+```bash
+npm run build
+```
+
+## Environment Variables
+
+See `.env.example` for all required variables. Never commit real credentials.
+
+## License
+
+Private — All rights reserved.

@@ -6,12 +6,54 @@ import StepOne from '../components/registration/StepOne';
 import StepTwo from '../components/registration/StepTwo';
 import StepThree from '../components/registration/StepThree';
 import { ArrowLeft, Home, Sparkles, Cloud, Star, StarHalf } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export default function RegistrationPage() {
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(() => {
+    const saved = localStorage.getItem('camp_form');
+    return saved ? JSON.parse(saved) : {};
+  });
+  const [siblings, setSiblings] = useState(() => {
+    const saved = localStorage.getItem('camp_sibs');
+    return saved ? JSON.parse(saved) : [];
+  });
   const navigate = useNavigate();
+  const [isWaitlisted, setIsWaitlisted] = useState(false);
+
+  useEffect(() => {
+    const checkCapacity = async () => {
+      const { count } = await supabase.from('registrations').select('*', { count: 'exact', head: true });
+      if (count && count >= 100) setIsWaitlisted(true);
+    };
+    checkCapacity();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('camp_form', JSON.stringify(formData));
+  }, [formData]);
+
+  useEffect(() => {
+    localStorage.setItem('camp_sibs', JSON.stringify(siblings));
+  }, [siblings]);
+
+  const handleAddSibling = () => {
+    setSiblings(prev => [...prev, { ...formData, id: Date.now() }]);
+    setFormData(prev => ({
+      ...prev,
+      name: '',
+      gender: '',
+      dob: '',
+      age: null,
+      class: '',
+      campType: '',
+      agreed: false
+    }));
+    setDirection(-1);
+    setStep(1);
+    window.scrollTo(0,0);
+  };
 
   useEffect(() => {
     window.scrollTo(0,0);
@@ -103,7 +145,7 @@ export default function RegistrationPage() {
             >
               {step === 1 && <StepOne data={formData} updateData={updateData} onNext={nextStep} />}
               {step === 2 && <StepTwo data={formData} updateData={updateData} onNext={nextStep} onBack={prevStep} />}
-              {step === 3 && <StepThree data={formData} onBack={prevStep} />}
+              {step === 3 && <StepThree data={formData} siblings={siblings} isWaitlisted={isWaitlisted} onBack={prevStep} onAddSibling={handleAddSibling} />}
             </motion.div>
           </AnimatePresence>
         </div>

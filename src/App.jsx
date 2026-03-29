@@ -5,6 +5,7 @@ import RegistrationPage from './pages/RegistrationPage';
 import ConfirmationPage from './pages/ConfirmationPage';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import ProtectedRoute from './components/admin/ProtectedRoute';
 import OrganizersPage from './pages/OrganizersPage';
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
         <Route path="/confirmation" element={<ConfirmationPage />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
       </Routes>
       <Toaster 
         position="bottom-right" 

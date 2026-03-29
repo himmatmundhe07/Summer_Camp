@@ -2,11 +2,15 @@ import { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { Sparkles, Printer, Home, PartyPopper, Star, Ticket } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function ConfirmationView() {
   const location = useLocation();
   const navigate = useNavigate();
   const data = location.state?.registrationData || {};
+  const siblings = location.state?.siblings || [];
+  const isWaitlisted = location.state?.isWaitlisted || false;
+  const allCampers = [...siblings, data].filter(c => c.name);
   
   // Registration ID use real booking_id if we have it, else mock (if direct visit)
   const regId = data.booking_id || `CAMP2026-0000`;
@@ -82,58 +86,60 @@ export default function ConfirmationView() {
         </div>
 
         {/* Content Block */}
-        <div className="w-full flex flex-col sm:flex-row print:flex-row bg-[#FAFAFA] print:bg-white min-h-[300px]">
-           
-           <div className="flex-1 p-8 sm:p-10 flex flex-col justify-center gap-6 relative">
-              <div className="border-b-2 border-dashed border-gray-300 pb-4">
-                <p className="text-xs font-nunito font-black uppercase tracking-widest text-[var(--color-primary)] mb-1">Camper</p>
-                <p className="text-3xl font-quicksand font-bold text-[var(--color-text-main)]">{data.name}</p>
-              </div>
-              
-              <div className="flex gap-4 border-b-2 border-dashed border-gray-300 pb-4">
-                <div className="flex-[0.8]">
-                  <p className="text-xs font-nunito font-black uppercase tracking-widest text-[#4589FF] mb-1">Age & Class</p>
-                  <p className="text-xl font-quicksand font-bold text-[var(--color-text-main)]">{data.age} Yrs • {data.class}</p>
+        {allCampers.map((camper, idx) => (
+          <div key={idx} className={`w-full flex flex-col sm:flex-row print:flex-row bg-[#FAFAFA] print:bg-white min-h-[300px] ${idx !== allCampers.length - 1 ? 'border-b-4 border-dashed border-gray-300' : ''}`}>
+             
+             <div className="flex-1 p-8 sm:p-10 flex flex-col justify-center gap-6 relative">
+                <div className="border-b-2 border-dashed border-gray-300 pb-4">
+                  <p className="text-xs font-nunito font-black uppercase tracking-widest text-[var(--color-primary)] mb-1">Camper</p>
+                  <p className="text-3xl font-quicksand font-bold text-[var(--color-text-main)] truncate max-w-[200px] sm:max-w-[350px] print:max-w-[400px]" title={camper.name}>{camper.name}</p>
                 </div>
-                <div className="flex-1">
-                  <p className="text-xs font-nunito font-black uppercase tracking-widest text-[#B066FF] mb-1">Package</p>
-                  <p className="text-xl font-quicksand font-bold text-[var(--color-text-main)]">
-                    {data.campType === 'daycare' ? 'Day Care' : data.campType === 'hostel' ? 'Hostel' : 'Daily 3 Hours'}
+                
+                <div className="flex gap-4 border-b-2 border-dashed border-gray-300 pb-4">
+                  <div className="flex-[0.8]">
+                    <p className="text-xs font-nunito font-black uppercase tracking-widest text-[#4589FF] mb-1">Age & Class</p>
+                    <p className="text-xl font-quicksand font-bold text-[var(--color-text-main)]">{camper.age} Yrs • {camper.class}</p>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-nunito font-black uppercase tracking-widest text-[#B066FF] mb-1">Package</p>
+                    <p className="text-xl font-quicksand font-bold text-[var(--color-text-main)]">
+                      {camper.campType === 'daycare' ? 'Day Care' : camper.campType === 'hostel' ? 'Hostel' : 'Daily 3 Hours'}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs font-nunito font-black uppercase tracking-widest text-gray-500 mb-2">Booking ID</p>
+                  <p className="text-2xl font-nunito font-black text-[var(--color-text-main)] flex items-center gap-2 bg-white border-2 border-[var(--color-text-main)] rounded-xl px-4 py-2 inline-flex shadow-sm">
+                    <Ticket className="w-6 h-6 text-[#FFC000]" /> {regId}
                   </p>
                 </div>
-              </div>
+             </div>
 
-              <div>
-                <p className="text-xs font-nunito font-black uppercase tracking-widest text-gray-500 mb-2">Booking ID</p>
-                <p className="text-2xl font-nunito font-black text-[var(--color-text-main)] flex items-center gap-2 bg-white border-2 border-[var(--color-text-main)] rounded-xl px-4 py-2 inline-flex shadow-sm">
-                  <Ticket className="w-6 h-6 text-[#FFC000]" /> {regId}
-                </p>
-              </div>
-           </div>
+             {/* Tear-off Stub / Status block */}
+             <div className="sm:w-[220px] print:w-[220px] border-t-4 sm:border-t-0 sm:border-l-4 border-dashed border-[var(--color-text-main)] print:border-[var(--color-text-main)] p-8 flex flex-col items-center justify-center gap-6 bg-white shrink-0">
+                 <div className="text-center w-full">
+                     <p className="text-[10px] font-nunito font-black text-gray-400 uppercase tracking-widest mb-2">Payment Status</p>
+                     <div className={`py-3 px-4 ${isWaitlisted ? 'bg-red-500 border-red-700 text-white' : 'bg-[#FFE285] border-[#E6AC00]'} border-2 rounded-xl font-nunito font-black uppercase tracking-widest text-[10px] sm:text-sm inline-block w-full shadow-solid overflow-hidden px-1`}>
+                       {isWaitlisted ? 'WAITLISTED' : 'PENDING'}
+                     </div>
+                 </div>
+                 
+                 {/* Real QR Code */}
+                 <div className="w-full aspect-square border-4 border-[var(--color-text-main)] rounded-xl flex items-center justify-center p-3 relative bg-white">
+                     <QRCodeSVG 
+                       value={`${regId}-${camper.name}`} 
+                       size={100} 
+                       style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                       fgColor="#2D3748"
+                     />
+                 </div>
+                 
+                 <p className="text-[9px] text-gray-400 font-quicksand font-bold text-center uppercase tracking-widest leading-tight">Must present ticket <br/>at drop-off</p>
+             </div>
 
-           {/* Tear-off Stub / Status block */}
-           <div className="sm:w-[220px] print:w-[220px] border-t-4 sm:border-t-0 sm:border-l-4 border-dashed border-[var(--color-text-main)] print:border-[var(--color-text-main)] p-8 flex flex-col items-center justify-center gap-6 bg-white shrink-0">
-               <div className="text-center w-full">
-                   <p className="text-[10px] font-nunito font-black text-gray-400 uppercase tracking-widest mb-2">Payment Status</p>
-                   <div className={`py-3 px-4 ${data.paymentMethod === 'online' ? 'bg-[#00D09C] border-[#00B386]' : 'bg-[#FFE285] border-[#E6AC00]'} border-2 rounded-xl font-nunito font-black uppercase tracking-widest text-sm inline-block w-full shadow-solid`}>
-                     {data.paymentMethod === 'online' ? 'PAID' : 'PENDING'}
-                   </div>
-               </div>
-               
-               {/* Decorative Barcode / QR */}
-               <div className="w-full aspect-square border-4 border-[var(--color-text-main)] rounded-xl flex items-center justify-center p-3 relative overflow-hidden bg-white">
-                   <div className="absolute inset-2 grid grid-cols-4 grid-rows-4 gap-1">
-                       {Array.from({length: 16}).map((_, i) => (
-                          <div key={i} className={`bg-[var(--color-text-main)] rounded-sm ${[0,3,5,10,12,15].includes(i) ? 'opacity-100' : 'opacity-0'}`} />
-                       ))}
-                   </div>
-                   <div className="absolute inset-4 border-4 border-[var(--color-text-main)] rounded-lg pointer-events-none opacity-20 border-dashed" />
-               </div>
-               
-               <p className="text-[9px] text-gray-400 font-quicksand font-bold text-center uppercase tracking-widest leading-tight">Must present ticket <br/>at drop-off</p>
-           </div>
-
-        </div>
+          </div>
+        ))}
       </div>
       
       {/* Controls Container (Hidden on Print) */}

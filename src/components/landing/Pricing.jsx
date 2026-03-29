@@ -59,9 +59,10 @@ export default function Pricing() {
             variants={cardVariants}
             initial="hidden"
             whileInView="visible"
+            whileTap={{ scale: 0.98 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ delay: 0.1 }}
-            className="card-fun bg-white rounded-3xl border-2 border-[var(--color-text-main)] p-8 flex flex-col"
+            className="card-fun bg-white rounded-3xl border-2 border-[var(--color-text-main)] p-8 flex flex-col cursor-pointer"
           >
             <h3 className="font-nunito font-black text-2xl text-[var(--color-text-main)] mb-2">Daily 3 Hours</h3>
             <p className="font-quicksand font-bold text-[var(--color-text-muted)] mb-6">Perfect for morning energy bursts!</p>
@@ -90,9 +91,10 @@ export default function Pricing() {
             variants={cardVariants}
             initial="hidden"
             whileInView="visible"
+            whileTap={{ scale: 0.98 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ delay: 0.2 }}
-            className="card-fun bg-[#FFE285] rounded-3xl border-2 border-[var(--color-text-main)] p-8 flex flex-col relative transform lg:-translate-y-4"
+            className="card-fun bg-[#FFE285] rounded-3xl border-2 border-[var(--color-text-main)] p-8 flex flex-col relative transform lg:-translate-y-4 cursor-pointer"
           >
             <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-[var(--color-primary)] text-white font-nunito font-bold px-4 py-1.5 rounded-full border-2 border-[var(--color-text-main)] shadow-solid whitespace-nowrap flex items-center gap-1.5">
               <Sparkles className="w-4 h-4" />
@@ -108,8 +110,8 @@ export default function Pricing() {
 
             <ul className="space-y-4 font-quicksand font-bold text-lg text-[var(--color-text-main)] mb-10 flex-grow">
               <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-[var(--color-text-main)] shrink-0" /> Everything in Class</li>
-              <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-[var(--color-text-main)] shrink-0" /> Extended care till 5 PM</li>
-              <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-[var(--color-text-main)] shrink-0" /> Healthy meals included!</li>
+              <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-[var(--color-text-main)] shrink-0" /> Extended care till 6 PM</li>
+              <li className="flex items-start gap-3"><CheckCircle2 className="w-6 h-6 text-[var(--color-text-main)] shrink-0" /> Engaging afternoon activities</li>
             </ul>
 
             <Link 
@@ -126,9 +128,10 @@ export default function Pricing() {
             variants={cardVariants}
             initial="hidden"
             whileInView="visible"
+            whileTap={{ scale: 0.98 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ delay: 0.3 }}
-            className="card-fun bg-white rounded-3xl border-2 border-[var(--color-text-main)] p-8 flex flex-col"
+            className="card-fun bg-white rounded-3xl border-2 border-[var(--color-text-main)] p-8 flex flex-col cursor-pointer"
           >
             <h3 className="font-nunito font-black text-2xl text-[var(--color-text-main)] mb-2">Hostel</h3>
             <p className="font-quicksand font-bold text-[var(--color-text-muted)] mb-6">The ultimate summer vacation away!</p>

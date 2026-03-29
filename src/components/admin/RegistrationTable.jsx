@@ -44,7 +44,21 @@ export default function RegistrationTable({ data, onRowClick }) {
               className="hover:bg-blue-50 cursor-pointer transition-colors even:bg-slate-50"
             >
               <td className="px-5 py-4 text-gray-400 font-nunito shrink-0">{idx + 1}</td>
-              <td className="px-5 py-4 font-nunito font-black text-sm whitespace-nowrap">{item.name}</td>
+              <td className="px-5 py-4">
+                <div className="font-nunito font-black text-sm whitespace-nowrap">{item.name}</div>
+                <div className="flex flex-col items-start gap-1 mt-1">
+                  {item.adminNotes && (
+                     <div className="text-[10px] font-bold text-orange-600 bg-orange-50 border border-orange-200 inline-block px-1.5 py-0.5 rounded uppercase tracking-widest max-w-[150px] truncate" title={item.adminNotes}>
+                       📝 {item.adminNotes}
+                     </div>
+                  )}
+                  {item.siblings?.length > 0 && (
+                     <div className="text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-200 inline-block px-1.5 py-0.5 rounded uppercase tracking-widest max-w-[150px] truncate" title={item.siblings.join(', ')}>
+                       👥 {item.siblings.length} Sibling{item.siblings.length > 1 ? 's' : ''}
+                     </div>
+                  )}
+                </div>
+              </td>
               <td className="px-5 py-4 text-gray-500 whitespace-nowrap">{item.gender} · {item.age}yrs · Cls {item.class}</td>
               <td className="px-5 py-4 text-[var(--color-secondary-dark)] whitespace-nowrap">+91 {item.mobile}</td>
               <td className="px-5 py-4 whitespace-nowrap">
@@ -61,12 +75,6 @@ export default function RegistrationTable({ data, onRowClick }) {
                     className="px-3 py-1 bg-white border border-[var(--color-text-main)] rounded text-xs hover:bg-[var(--color-bg-yellow)]"
                   >
                     View
-                  </button>
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); window.print(); }}
-                    className="px-3 py-1 bg-[var(--color-text-main)] text-white border border-[var(--color-text-main)] rounded text-xs hover:bg-gray-800"
-                  >
-                    Print
                   </button>
                 </div>
               </td>

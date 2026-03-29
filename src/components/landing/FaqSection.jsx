@@ -8,11 +8,11 @@ export default function FaqSection() {
   const faqs = [
     {
       question: "What are the camp timings?",
-      answer: "The 'Daily 3 Hours' session runs from 8:00 AM to 11:00 AM. For parents who need extended care, our 'Day Care' option runs until 5:00 PM!"
+      answer: "The 'Daily 3 Hours' session runs from 8:00 AM to 11:00 AM. For parents who need extended care, our 'Day Care' option runs until 6:00 PM!"
     },
     {
       question: "Are meals provided?",
-      answer: "Yes! If you select the Day Care or Hostel option, healthy, delicious, and kid-approved meals and snacks are fully included."
+      answer: "Meals are provided exclusively for our Hostel option! Healthy, delicious, and kid-approved meals and snacks are fully included."
     },
     {
       question: "What should my child bring?",
@@ -27,7 +27,7 @@ export default function FaqSection() {
   return (
     <section className="bg-[var(--color-bg-light)] border-t-2 border-[var(--color-text-main)] py-20 px-6 lg:px-12 relative overflow-hidden">
       
-      <div className="absolute top-[10%] left-[5%] opacity-50 hidden lg:block animate-pulse-soft">
+      <div className="absolute top-[5%] lg:top-[10%] left-[2%] lg:left-[5%] opacity-30 lg:opacity-50 animate-pulse-soft scale-50 lg:scale-100">
         <Sparkles className="w-16 h-16 text-[var(--color-primary)]" />
       </div>
 

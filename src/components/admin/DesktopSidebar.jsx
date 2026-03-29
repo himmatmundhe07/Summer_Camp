@@ -2,6 +2,7 @@ export default function DesktopSidebar({ activeTab, setActiveTab }) {
   const tabs = [
     { id: 'overview', label: 'Dashboard', color: 'hover:bg-[#FF9EC0] hover:border-[var(--color-text-main)]' },
     { id: 'registrations', label: 'Kids List', color: 'hover:bg-[#85E1C8] hover:border-[var(--color-text-main)]' },
+    { id: 'attendance', label: 'Attendance', color: 'hover:bg-[#B066FF] hover:border-[var(--color-text-main)]' },
     { id: 'logout', label: 'Log Out', color: 'hover:bg-[#FFC000] hover:border-[var(--color-text-main)] mt-auto' },
   ];
 

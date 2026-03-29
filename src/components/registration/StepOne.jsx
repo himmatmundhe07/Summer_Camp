@@ -13,10 +13,20 @@ export default function StepOne({ data, updateData, onNext }) {
     let newErrors = {};
     if (!data.name || data.name.length < 3) newErrors.name = "Enter a valid name!";
     if (!data.gender) newErrors.gender = "Please select a gender!";
-    if (!data.dob) newErrors.dob = "When is the birthday?";
-    if (data.age && (data.age < 3 || data.age > 12)) newErrors.dob = "You must be 3-12 years old!";
+    if (!data.dob) {
+      newErrors.dob = "When is the birthday?";
+    } else if (new Date(data.dob) > new Date()) {
+      newErrors.dob = "Birthday can't be in the future!";
+    } else if (data.age !== undefined && (data.age < 3 || data.age > 12)) {
+      newErrors.dob = "You must be 3-12 years old!";
+    }
     if (!data.class) newErrors.class = "What class are you in?";
     if (!data.mobile || !/^\d{10}$/.test(data.mobile)) newErrors.mobile = "Check the 10-digit mobile number!";
+    if (!data.emergencyContact || !/^\d{10}$/.test(data.emergencyContact)) {
+       newErrors.emergencyContact = "Need a valid 10-digit emergency number!";
+    } else if (data.mobile === data.emergencyContact) {
+       newErrors.emergencyContact = "Wait, must be a DIFFERENT number!";
+    }
     if (!data.address || data.address.trim().length < 5) newErrors.address = "Where do you live?";
 
     setErrors(newErrors);
@@ -48,12 +58,18 @@ export default function StepOne({ data, updateData, onNext }) {
     updateData({ dob: dobValue });
     
     if (dobValue) {
-      const ageNum = differenceInYears(new Date(), new Date(dobValue));
-      updateData({ age: ageNum });
-      if (ageNum < 3 || ageNum > 12) {
-         setErrors(prev => ({...prev, dob: "Must be 3-12 years old!"}));
+      const dobDate = new Date(dobValue);
+      if (dobDate > new Date()) {
+        updateData({ age: null });
+        setErrors(prev => ({...prev, dob: "Birthday can't be in the future!"}));
       } else {
-         setErrors(prev => { const n = {...prev}; delete n.dob; return n; });
+        const ageNum = differenceInYears(new Date(), dobDate);
+        updateData({ age: ageNum });
+        if (ageNum < 3 || ageNum > 12) {
+           setErrors(prev => ({...prev, dob: "Must be 3-12 years old!"}));
+        } else {
+           setErrors(prev => { const n = {...prev}; delete n.dob; return n; });
+        }
       }
     }
   };
@@ -142,6 +158,16 @@ export default function StepOne({ data, updateData, onNext }) {
         onChange={(e) => updateData({ mobile: e.target.value.replace(/\D/g, '').slice(0, 10) })} 
         error={errors.mobile}
         placeholder="9876543210"
+      />
+
+      <TextField 
+        label="Emergency Contact" 
+        prefix="+91"
+        inputMode="numeric"
+        value={data.emergencyContact || ''} 
+        onChange={(e) => updateData({ emergencyContact: e.target.value.replace(/\D/g, '').slice(0, 10) })} 
+        error={errors.emergencyContact}
+        placeholder="Alternative 10-digit number"
       />
 
       <TextField 

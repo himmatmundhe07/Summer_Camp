@@ -2,6 +2,7 @@ export default function MobileTabBar({ activeTab, setActiveTab }) {
   const tabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'registrations', label: 'List' },
+    { id: 'attendance', label: 'Attendance' },
     { id: 'logout', label: 'Log Out' },
   ];
 

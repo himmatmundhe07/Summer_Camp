@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PrimaryButton from '../../components/shared/PrimaryButton';
 import { Sparkles, Eye, EyeOff, Star } from 'lucide-react';
@@ -10,6 +10,14 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate('/admin/dashboard');
+      }
+    });
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -86,7 +94,7 @@ export default function AdminLogin() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full h-12 bg-gray-50 border-2 border-gray-200 focus:border-[var(--color-accent)] focus:bg-white rounded-xl focus:outline-none pl-4 pr-12 font-quicksand font-bold text-base text-[var(--color-text-main)] transition-all shadow-sm focus:shadow-[4px_4px_0px_0px_rgba(255,192,0,0.3)]"
               required
-              placeholder="admin123"
+              placeholder="Enter password"
             />
             <button
               type="button"
