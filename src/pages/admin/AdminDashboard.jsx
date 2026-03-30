@@ -51,7 +51,8 @@ export default function AdminDashboard() {
             campType: row.camp_type,
             amount: row.amount,
             status: row.status,
-            date: new Date(row.created_at).toLocaleDateString(),
+            date: new Date(row.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+            time: new Date(row.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             address: row.address,
             adminNotes: row.admin_notes || '',
             emergencyContact: row.emergency_contact || '',
@@ -238,6 +239,7 @@ export default function AdminDashboard() {
             <StatsGrid stats={{ 
                total: registrations.length, 
                revenue: registrations.filter(r => r.status === 'Paid').reduce((sum, r) => sum + Number(r.amount || 0), 0), 
+               pending: registrations.filter(r => r.status === 'Pending').reduce((sum, r) => sum + Number(r.amount || 0), 0),
                classOnly: registrations.filter(r => r.campType === 'class').length, 
                extended: registrations.filter(r => r.campType !== 'class').length 
             }} />

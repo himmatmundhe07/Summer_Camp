@@ -56,9 +56,11 @@ export default function RegistrationList({ data, onRowClick }) {
               {getCampIcon(item.campType)}
               <span className="truncate">{item.campType === 'class' ? 'Daily 3 Hours' : item.campType === 'daycare' ? 'Day Care' : 'Hostel'}</span>
             </div>
-            
-            <div className="font-nunito font-black text-lg text-[var(--color-primary)]">
-              ₹{item.amount}
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] text-gray-400 font-bold mb-0.5">{item.date} {item.time}</span>
+              <div className="font-nunito font-black text-lg text-[var(--color-primary)] leading-none">
+                ₹{item.amount}
+              </div>
             </div>
           </div>
 

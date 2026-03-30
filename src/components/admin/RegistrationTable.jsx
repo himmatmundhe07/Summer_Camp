@@ -29,7 +29,7 @@ export default function RegistrationTable({ data, onRowClick }) {
       <table className="w-full text-left border-collapse min-w-[900px]">
         <thead>
           <tr className="bg-gray-100 border-b-2 border-[var(--color-text-main)]">
-            {['#', 'Explorer Name', 'Bio', 'Contact', 'Adventure', 'Amount', 'Status', 'Actions'].map((header) => (
+            {['#', 'Explorer Name', 'Bio', 'Contact', 'Adventure', 'Registered At', 'Amount', 'Status', 'Actions'].map((header) => (
               <th key={header} className="px-5 py-4 font-nunito font-black text-[11px] uppercase tracking-widest text-[var(--color-text-main)]">
                 {header}
               </th>
@@ -63,6 +63,10 @@ export default function RegistrationTable({ data, onRowClick }) {
               <td className="px-5 py-4 text-[var(--color-secondary-dark)] whitespace-nowrap">+91 {item.mobile}</td>
               <td className="px-5 py-4 whitespace-nowrap">
                 {getCampBadge(item.campType)}
+              </td>
+              <td className="px-5 py-4 whitespace-nowrap">
+                <div className="font-nunito font-bold text-[13px]">{item.date}</div>
+                <div className="text-[10px] text-gray-500 font-bold">{item.time}</div>
               </td>
               <td className="px-5 py-4 font-nunito font-black">₹{item.amount}</td>
               <td className="px-5 py-4 whitespace-nowrap">

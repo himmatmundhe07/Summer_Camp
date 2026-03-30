@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, IndianRupee, BookOpen, Tent } from 'lucide-react';
+import { Users, IndianRupee, BookOpen, Tent, Clock } from 'lucide-react';
 
 const StatCard = ({ label, targetValue, icon: Icon, colorClass, shadowClass }) => {
   const [value, setValue] = useState(0);
@@ -46,9 +46,10 @@ const StatCard = ({ label, targetValue, icon: Icon, colorClass, shadowClass }) =
 
 export default function StatsGrid({ stats }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 w-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10 w-full">
       <StatCard label="Total Kids" targetValue={stats.total} icon={Users} colorClass="bg-[#FF9EC0]" />
       <StatCard label="Revenue" targetValue={stats.revenue} icon={IndianRupee} colorClass="bg-[#85E1C8]" />
+      <StatCard label="Pending" targetValue={stats.pending || 0} icon={Clock} colorClass="bg-[#FFC685]" />
       <StatCard label="Daily 3 Hours" targetValue={stats.classOnly} icon={BookOpen} colorClass="bg-[#FFE285]" />
       <StatCard label="Day Care" targetValue={stats.extended} icon={Tent} colorClass="bg-[#8CB8FF]" />
     </div>
